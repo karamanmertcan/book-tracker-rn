@@ -1,15 +1,95 @@
-import { StyleSheet } from 'react-native';
-
-import EditScreenInfo from '../components/EditScreenInfo';
-import { Text, View } from '../components/Themed';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, Dimensions, View, Text, ScrollView } from 'react-native';
+import { Shadow } from 'react-native-shadow-2';
+import BookInfos from '../components/BookInfos/BookInfos';
+import Chart from '../components/Chart/Chart';
+import UserAvatar from '../components/UserAvatar/UserAvatar';
 import { RootTabScreenProps } from '../types';
 
+interface Quotes {
+  text: string;
+  author: string;
+}
+
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
+  const [avatarColor, setAvatarColor] = useState('');
+  const [quote, setQuote] = useState({} as Quotes);
+
+  function getRandomColor() {
+    var letters = '0123456789ABCDEF';
+    var color = '#';
+    for (var i = 0; i < 6; i++) {
+      color += letters[Math.floor(Math.random() * 16)];
+    }
+    return color;
+  }
+
+  const generateRandomNumber = () => {
+    return Math.floor(Math.random() * Math.floor(1000));
+  };
+
+  const getQuotes = async () => {
+    const res = await fetch('https://type.fit/api/quotes');
+    const data = await res.json();
+
+    if (data) {
+      setQuote(data[generateRandomNumber()]);
+    }
+  };
+
+  useEffect(() => {
+    setAvatarColor(getRandomColor());
+    getQuotes();
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab One</Text>
-      <View style={styles.separator} lightColor="#eee" darkColor="rgba(255,255,255,0.1)" />
-      <EditScreenInfo path="/screens/TabOneScreen.tsx" />
+      <ScrollView
+        style={{
+          flexGrow: 1
+        }}>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            marginTop: '10%'
+          }}>
+          <Shadow>
+            <View style={styles.motivationalQuote}>
+              <Text style={styles.quoteText}>{quote.text}</Text>
+              <Text style={styles.quoteText}>-{quote.author}</Text>
+            </View>
+          </Shadow>
+        </View>
+
+        <View
+          style={{
+            flex: 2,
+            alignItems: 'center',
+            marginTop: '10%'
+          }}>
+          <UserAvatar avatarColor={avatarColor} />
+        </View>
+        <View
+          style={{
+            flex: 2,
+            alignItems: 'center',
+            marginTop: '10%'
+          }}>
+          <View style={styles.bookInfos}>
+            <BookInfos />
+          </View>
+        </View>
+        <View
+          style={{
+            flex: 1,
+            alignItems: 'center',
+            paddingBottom: '20%',
+            paddingTop: '10%'
+          }}>
+          <Chart />
+        </View>
+      </ScrollView>
     </View>
   );
 }
@@ -17,16 +97,30 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#2c3e50'
+  },
+
+  quoteText: {
+    fontSize: 12
+  },
+  motivationalQuote: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    width: 300,
+    height: 100,
+    padding: 20,
+    borderRadius: 50,
+    overflow: 'hidden',
+    backgroundColor: '#c8d6e5'
+  },
+  bookInfos: {
+    backgroundColor: '#c8d6e5',
+    borderRadius: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
     alignItems: 'center',
-    justifyContent: 'center',
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
-  separator: {
-    marginVertical: 30,
-    height: 1,
-    width: '80%',
-  },
+    width: ' 90%',
+    height: 150,
+    overflow: 'hidden'
+  }
 });

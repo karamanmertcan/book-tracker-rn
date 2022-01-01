@@ -17,20 +17,20 @@ const linking: LinkingOptions<RootStackParamList> = {
         screens: {
           TabOne: {
             screens: {
-              TabOneScreen: 'one',
-            },
+              TabOneScreen: 'one'
+            }
           },
           TabTwo: {
             screens: {
               TabTwoScreen: 'two',
-            },
-          },
-        },
+              BookDetailsScreen: 'book/:id'
+            }
+          }
+        }
       },
-      Modal: 'modal',
-      NotFound: '*',
-    },
-  },
+      NotFound: '*'
+    }
+  }
 };
 
 export default linking;
