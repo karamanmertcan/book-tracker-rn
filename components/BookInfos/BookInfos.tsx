@@ -1,9 +1,13 @@
+import { useAtom } from 'jotai';
 import * as React from 'react';
 import { Text, View } from 'react-native';
+import { userState } from '../../store';
 
 interface IBookInfosProps {}
 
 const BookInfos: React.FunctionComponent<IBookInfosProps> = (props) => {
+  const [user, setUser] = useAtom(userState);
+
   return (
     <>
       <View
@@ -19,7 +23,7 @@ const BookInfos: React.FunctionComponent<IBookInfosProps> = (props) => {
           }}>
           Okuduğum Sayfa Sayısı
         </Text>
-        <Text>150</Text>
+        <Text>{user && user.user && user.user.totalPage}</Text>
       </View>
       <View
         style={{

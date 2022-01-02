@@ -18,8 +18,12 @@ import TabTwoScreen from '../screens/TabTwoScreen';
 import BookDetailsScreen from '../screens/BookDetailsScreen';
 import { RootStackParamList, RootTabParamList, RootTabScreenProps } from '../types';
 import LinkingConfiguration from './LinkingConfiguration';
+import Login from '../screens/LoginScreen';
+import Register from '../screens/RegisterScreen';
+import { useAtom } from 'jotai';
+import { isAuthenticated } from '../store';
 
-export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeName }) {
+export default function Navigation({ colorScheme }: { colorScheme?: ColorSchemeName }) {
   return (
     <NavigationContainer
       linking={LinkingConfiguration}
@@ -36,15 +40,29 @@ export default function Navigation({ colorScheme }: { colorScheme: ColorSchemeNa
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 function RootNavigator() {
+  const [isAuthenticatedUser] = useAtom(isAuthenticated);
   return (
     <Stack.Navigator>
-      <Stack.Screen name='Root' component={BottomTabNavigator} options={{ headerShown: false }} />
-      <Stack.Screen
-        name='BookDetailsScreen'
-        component={BookDetailsScreen}
-        options={{ headerShown: false }}
-      />
-      <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />
+      {!isAuthenticatedUser ? (
+        <>
+          <Stack.Screen name='Login' component={Login} options={{ headerShown: false }} />
+          <Stack.Screen name='Register' component={Register} options={{ headerShown: false }} />
+        </>
+      ) : (
+        <>
+          <Stack.Screen
+            name='Root'
+            component={BottomTabNavigator}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name='BookDetailsScreen'
+            component={BookDetailsScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />
+        </>
+      )}
     </Stack.Navigator>
   );
 }

@@ -1,10 +1,40 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Fab from '../components/Fab/Fab';
 import ModalTester from '../components/Modal/Modal';
 import { useNavigation } from '@react-navigation/native';
+import { useQuery } from 'react-query';
+import * as BookService from '../api/services/Book';
+import axios from 'axios';
+import { useAtom } from 'jotai';
+import { myToken } from '../store';
+import BookCards from '../components/BookCards/BookCards';
 
 export default function TabTwoScreen() {
+  const getUserBooks = async () => {
+    try {
+      const { data } = await axios.get('/get-user-books', {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+      return data;
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const { isLoading, isError, data, error } = useQuery('books', () => getUserBooks(), {
+    retry: 10,
+    refetchInterval: 10000
+  });
+
+  console.log(isError);
+  console.log(isLoading);
+  console.log('use query', data.book.length);
+
+  const [token, setToken] = useAtom(myToken);
+
   const navigation = useNavigation();
 
   const [isModalVisible, setModalVisible] = useState(false);
@@ -33,6 +63,26 @@ export default function TabTwoScreen() {
     toggleModal();
   };
 
+  console.log('isError =>', isError);
+  console.log('isLoading =>', isLoading);
+  console.log('error =>', error);
+
+  if (isError) {
+    return (
+      <View>
+        <Text>Error!</Text>{' '}
+      </View>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <View>
+        <Text>retry: 10,</Text>
+      </View>
+    );
+  }
+
   return (
     <View style={styles.container}>
       <View
@@ -40,29 +90,28 @@ export default function TabTwoScreen() {
           flexDirection: 'row',
           flexWrap: 'wrap'
         }}>
-        <TouchableOpacity
-          style={{
-            width: '100%'
-          }}
-          onPress={() => navigation.navigate('BookDetailsScreen')}>
-          <View style={styles.gridView}>
-            <View>
-              <Text
-                style={{
-                  fontSize: 14,
-                  fontWeight: 'bold'
-                }}>
-                {bookInfos.title}
-              </Text>
-              <Text
-                style={{
-                  fontSize: 10
-                }}>
-                -{bookInfos.subtitle}
-              </Text>
-            </View>
+        {data && data.book && data.book.length !== 0 ? (
+          data?.book?.map((book: any, index: any) => {
+            return <BookCards {...book} key={index} />;
+          })
+        ) : (
+          <View
+            style={{
+              flex: 1,
+
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}>
+            <Text
+              style={{
+                fontSize: 24,
+                fontWeight: 'bold',
+                color: '#fff'
+              }}>
+              Henüz kitap eklenmedi
+            </Text>
           </View>
-        </TouchableOpacity>
+        )}
       </View>
       <View
         style={{

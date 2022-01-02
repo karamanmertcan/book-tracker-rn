@@ -1,9 +1,11 @@
+import { useAtom } from 'jotai';
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, Dimensions, View, Text, ScrollView } from 'react-native';
+import { StyleSheet, Dimensions, View, Text, ScrollView, TouchableOpacity } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 import BookInfos from '../components/BookInfos/BookInfos';
 import Chart from '../components/Chart/Chart';
 import UserAvatar from '../components/UserAvatar/UserAvatar';
+import { logoutUser, userState } from '../store';
 import { RootTabScreenProps } from '../types';
 
 interface Quotes {
@@ -13,6 +15,7 @@ interface Quotes {
 
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
   const [avatarColor, setAvatarColor] = useState('');
+  const [, setLogoutUser] = useAtom(logoutUser);
   const [quote, setQuote] = useState({} as Quotes);
 
   function getRandomColor() {
@@ -54,6 +57,17 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
             alignItems: 'center',
             marginTop: '10%'
           }}>
+          <View>
+            <TouchableOpacity
+              onPress={() => setLogoutUser()}
+              style={{
+                width: 100,
+                height: 60,
+                backgroundColor: '#f2f'
+              }}>
+              <Text>Çıkış Yap</Text>
+            </TouchableOpacity>
+          </View>
           <Shadow>
             <View style={styles.motivationalQuote}>
               <Text style={styles.quoteText}>{quote.text}</Text>
