@@ -1,4 +1,5 @@
 import axios from 'axios';
+import HTTPClient from '../HTTPClient';
 
 export type Book = {
   _id: string;
@@ -9,7 +10,12 @@ export type Book = {
   createdAt: string;
 };
 
-export async function getBooks() {
-  const { data } = await axios.get<Book>('/get-user-books');
+export async function getBooks(token: string) {
+  const { data } = await HTTPClient.get<Book>('/get-user-books', {
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+      Authorization: 'Bearer ' + token
+    }
+  });
   return data;
 }

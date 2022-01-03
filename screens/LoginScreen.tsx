@@ -24,7 +24,6 @@ import AuthForm from '../components/AuthForm/AuthForm';
 import * as UserService from '../api/services/User';
 import { isAuthenticated, myToken, userState } from '../store';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useQuery } from 'react-query';
 
 interface ILoginProps {
   outlineColor: string;
@@ -35,7 +34,6 @@ interface ILoginProps {
 const Login: React.FunctionComponent<ILoginProps> = (props) => {
   const [isAuthenticatedUser, setIsAuthenticatedUser] = useAtom(isAuthenticated);
   const [user, setUser] = useAtom(myToken);
-  console.log('user', user);
 
   const [state, setState] = useAtom(userState);
   const [errorMessage, setErrorMessage] = useState('');
@@ -59,25 +57,31 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
       try {
         console.log(input);
 
-        const { data } = await axios.post('/login', {
-          email: input.email,
-          password: input.password
+        // const { data } = await axios.post('/login', {
+        //   email: input.email,
+        //   password: input.password
+        // });
+
+        UserService.login(input.email, input.password).then(async (res) => {
+          console.log(res);
+
+          if (res.ok) {
+            await AsyncStorage.setItem('token', JSON.stringify(res.token));
+            await AsyncStorage.setItem('user', JSON.stringify(res.user));
+            setState({
+              user: res.user,
+              token: res.token
+            });
+
+            setUser(res.token);
+
+            setIsAuthenticatedUser(true);
+            showMessage({
+              message: 'Giris yapiliyor',
+              type: 'success'
+            });
+          }
         });
-
-        if (data.ok) {
-          await AsyncStorage.setItem('token', JSON.stringify(data.token));
-          await AsyncStorage.setItem('user', JSON.stringify(data.user));
-          setState({
-            user: data.user,
-            token: data.token
-          });
-
-          setIsAuthenticatedUser(true);
-          showMessage({
-            message: 'Giris yapiliyor',
-            type: 'success'
-          });
-        }
       } catch (error) {
         console.log(error);
         showMessage({

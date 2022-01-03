@@ -6,7 +6,7 @@ import { useAtom } from 'jotai';
 
 export const isAuthenticated = atom(true);
 export const userState = atom<any>({});
-export const myToken = atom<null | string>('');
+export const myToken = atom<any>('');
 
 export const getTokenAndUserFromStorage = atom(
   () => '',

@@ -18,7 +18,6 @@ const UserProvider = ({ children }: { children: any }) => {
   useEffect(() => {
     getToken();
   }, []);
-  axios.defaults.baseURL = 'http://192.168.1.9:8000/api';
 
   return (
     <UserContext.Provider

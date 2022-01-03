@@ -11,29 +11,26 @@ import { myToken } from '../store';
 import BookCards from '../components/BookCards/BookCards';
 
 export default function TabTwoScreen() {
-  const getUserBooks = async () => {
-    try {
-      const { data } = await axios.get('/get-user-books', {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      return data;
-    } catch (error) {
-      console.log(error);
-    }
-  };
-  const { isLoading, isError, data, error } = useQuery('books', () => getUserBooks(), {
-    retry: 10,
-    refetchInterval: 10000
-  });
-
-  console.log(isError);
-  console.log(isLoading);
-  console.log('use query', data.book.length);
+  // const getUserBooks = async () => {
+  //   try {
+  //     const { data } = await axios.get('/get-user-books', {
+  //       headers: {
+  //         Authorization: `Bearer ${token}`,
+  //         'Content-Type': 'application/json'
+  //       }
+  //     });
+  //     return data;
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // };
 
   const [token, setToken] = useAtom(myToken);
+  console.log('token => ' + token);
+
+  const { isLoading, isError, data, error } = useQuery('books', () => BookService.getBooks(token));
+
+  console.log('DATA', data);
 
   const navigation = useNavigation();
 
@@ -62,10 +59,6 @@ export default function TabTwoScreen() {
     setBookName('');
     toggleModal();
   };
-
-  console.log('isError =>', isError);
-  console.log('isLoading =>', isLoading);
-  console.log('error =>', error);
 
   if (isError) {
     return (
