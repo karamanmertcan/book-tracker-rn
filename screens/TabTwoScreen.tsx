@@ -1,64 +1,112 @@
 import { useEffect, useState } from 'react';
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Fab from '../components/Fab/Fab';
 import ModalTester from '../components/Modal/Modal';
-import { useNavigation } from '@react-navigation/native';
+import { useIsFocused, useNavigation } from '@react-navigation/native';
 import { useQuery } from 'react-query';
 import * as BookService from '../api/services/Book';
 import axios from 'axios';
 import { useAtom } from 'jotai';
 import { myToken } from '../store';
 import BookCards from '../components/BookCards/BookCards';
+import { useForm } from 'react-hook-form';
+import { showMessage } from 'react-native-flash-message';
+
+const initialState = {
+  bookName: '',
+  author: ''
+};
 
 export default function TabTwoScreen() {
-  // const getUserBooks = async () => {
-  //   try {
-  //     const { data } = await axios.get('/get-user-books', {
-  //       headers: {
-  //         Authorization: `Bearer ${token}`,
-  //         'Content-Type': 'application/json'
-  //       }
-  //     });
-  //     return data;
-  //   } catch (error) {
-  //     console.log(error);
-  //   }
-  // };
-
   const [token, setToken] = useAtom(myToken);
-  console.log('token => ' + token);
-
-  const { isLoading, isError, data, error } = useQuery('books', () => BookService.getBooks(token));
-
-  console.log('DATA', data);
 
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
 
   const [isModalVisible, setModalVisible] = useState(false);
-  const [bookName, setBookName] = useState('');
-  const [bookInfos, setBookInfos] = useState({
-    title: '',
-    subtitle: ''
-  });
+  const [book, setBook] = useState({});
+
+  //get books
+  const { isLoading, isError, data, refetch } = useQuery(
+    'books',
+    () => BookService.getBooks(token),
+    {
+      refetchOnWindowFocus: false,
+      enabled: false // turned off by default, manual refetch is needed
+    }
+  );
+
+  //add book
+  const addBook = async (name: string, author: string) => {
+    try {
+      BookService.addBook(
+        {
+          bookName: name,
+          bookAuthor: author
+        },
+        token
+      );
+
+      refetch();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm();
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
-  const getBookFromGoogle = async () => {
-    const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${bookName}`);
-    const data = await res.json();
+  const onSubmit = async (input: any) => {
+    console.log(input);
 
-    console.log(data.items[0]);
-
-    setBookInfos({
-      title: data.items[0].volumeInfo.title,
-      subtitle: data.items[0].volumeInfo.authors[0]
-    });
-
-    setBookName('');
-    toggleModal();
+    try {
+      getBookFromGoogle(input.book);
+      reset();
+    } catch (error) {
+      console.log(error);
+    }
   };
+
+  const getBookFromGoogle = async (book: string) => {
+    try {
+      const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${book}`);
+      const data = await res.json();
+
+      console.log(data);
+
+      if (!data) {
+        showMessage({
+          message: 'Kitap bulunamadi',
+          type: 'danger'
+        });
+      }
+
+      addBook(data.items[0].volumeInfo.title, data.items[0].volumeInfo.authors[0]);
+
+      showMessage({
+        message: 'Kitap Eklendi',
+        type: 'success'
+      });
+
+      toggleModal();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (isFocused) {
+      refetch();
+    }
+  }, []);
 
   if (isError) {
     return (
@@ -71,41 +119,58 @@ export default function TabTwoScreen() {
   if (isLoading) {
     return (
       <View>
-        <Text>retry: 10,</Text>
+        <Text></Text>
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      <View
-        style={{
-          flexDirection: 'row',
-          flexWrap: 'wrap'
-        }}>
-        {data && data.book && data.book.length !== 0 ? (
-          data?.book?.map((book: any, index: any) => {
-            return <BookCards {...book} key={index} />;
-          })
-        ) : (
-          <View
+      <ScrollView>
+        <View
+          style={{
+            justifyContent: 'center',
+            alignItems: 'center',
+            padding: 10
+          }}>
+          <Text
             style={{
-              flex: 1,
-
-              justifyContent: 'center',
-              alignItems: 'center'
+              fontSize: 20,
+              fontWeight: 'bold',
+              color: '#fff'
             }}>
-            <Text
+            Kitaplarım
+          </Text>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            flexWrap: 'wrap'
+          }}>
+          {data && data.book && data.book.length !== 0 ? (
+            data?.book?.map((book: any, index: any) => {
+              return <BookCards {...book} key={index} />;
+            })
+          ) : (
+            <View
               style={{
-                fontSize: 24,
-                fontWeight: 'bold',
-                color: '#fff'
+                flex: 1,
+
+                justifyContent: 'center',
+                alignItems: 'center'
               }}>
-              Henüz kitap eklenmedi
-            </Text>
-          </View>
-        )}
-      </View>
+              <Text
+                style={{
+                  fontSize: 24,
+                  fontWeight: 'bold',
+                  color: '#fff'
+                }}>
+                Henüz kitap eklenmedi
+              </Text>
+            </View>
+          )}
+        </View>
+      </ScrollView>
       <View
         style={{
           position: 'absolute',
@@ -116,11 +181,12 @@ export default function TabTwoScreen() {
         <Fab toggleModal={toggleModal} />
       </View>
       <ModalTester
+        control={control}
+        onSubmit={onSubmit}
+        handleSubmit={handleSubmit}
+        addBook={addBook}
         toggleModal={toggleModal}
         isModalVisible={isModalVisible}
-        bookName={bookName}
-        setBookName={setBookName}
-        getBookFromGoogle={getBookFromGoogle}
       />
     </View>
   );

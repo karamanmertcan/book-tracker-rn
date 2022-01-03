@@ -1,5 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useState } from 'react';
+import { Controller } from 'react-hook-form';
 import {
   Button,
   Dimensions,
@@ -18,6 +19,9 @@ import { DatePicker } from '../DatePicker/DatePicker';
 interface IModal {
   isModalVisible: boolean;
   toggleModal: () => void;
+  control: any;
+  onSubmit: () => void;
+  handleSubmit: (fieldValues: any) => void;
 }
 
 const AddPageModal: React.FC<IModal> = (props) => {
@@ -48,25 +52,35 @@ const AddPageModal: React.FC<IModal> = (props) => {
                 alignItems: 'center'
               }}>
               <ScrollView>
-                <View style={{ height: 200 }}>
+                <View style={{ height: 200, width: '100%' }}>
                   <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>
-                    Sayfa Sayısı ve Tarih Giriniz
+                    Sayfa Sayısı
                   </Text>
-                  <TextInput
-                    style={{
-                      borderWidth: 1,
-                      height: 40,
-                      padding: 8
+                  <Controller
+                    control={props.control}
+                    rules={{
+                      required: true
                     }}
-                    keyboardType='number-pad'
-                    onChangeText={props.setBookName}
-                    value={props.bookName}
-                    placeholder='Sayfa Sayısı'
+                    render={({ field: { onChange, onBlur, value } }) => (
+                      <TextInput
+                        placeholder='Sayfa Sayısı'
+                        keyboardType='numeric'
+                        onBlur={onBlur}
+                        value={value}
+                        onChangeText={onChange}
+                        style={{
+                          height: 40,
+                          margin: 12,
+                          borderWidth: 1,
+                          padding: 10
+                        }}
+                      />
+                    )}
+                    name='pageNumber'
                   />
-                  <DatePicker />
                   <View style={{ alignItems: 'center', marginTop: '10%' }}>
                     <TouchableOpacity
-                      onPress={props.getBookFromGoogle}
+                      onPress={props.handleSubmit(props.onSubmit)}
                       style={{
                         width: '50%',
                         height: 50,

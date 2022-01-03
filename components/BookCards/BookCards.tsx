@@ -11,6 +11,8 @@ interface IBookCardsProps {
 const BookCards: React.FunctionComponent<IBookCardsProps> = (props) => {
   const navigation = useNavigation<any>();
 
+  console.log(props._id);
+
   return (
     <TouchableOpacity
       onPress={() => {

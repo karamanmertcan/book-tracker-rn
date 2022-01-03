@@ -1,52 +1,103 @@
 import { Ionicons } from '@expo/vector-icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import UserReadList from '../components/UserReadList/UserReadList';
 import AddPageModal from '../components/AddPageModal/AddPageModal';
 import axios from 'axios';
 import { useQuery } from 'react-query';
 import { useAtom } from 'jotai';
 import { myToken } from '../store';
+import * as BookService from '../api/services/Book';
+import { showMessage } from 'react-native-flash-message';
+import { useForm } from 'react-hook-form';
 
 interface IBookDetailsScreenProps {}
 
 const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (props) => {
   const [token, setToken] = useAtom(myToken);
+
+  const navigation = useNavigation();
+  const isFocused = useIsFocused();
+
   const [isModalVisible, setModalVisible] = useState(false);
   const route = useRoute<any>();
   const { bookId } = route.params;
-  const [page, setPage] = useState(0);
-  const [bookDate, setBookdate] = useState('');
-  const [formData, setFormData] = useState({
-    pageNumber: page,
-    date: bookDate
-  });
 
-  const getBookDetails = async () => {
-    try {
-      const { data } = await axios.get(`/get-single-book/${bookId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-      return data;
-    } catch (error) {
-      console.log(error);
+  const { isLoading, isError, data, error, refetch } = useQuery(
+    'booksDetails',
+    () => BookService.getBookDetails(bookId, token),
+    {
+      refetchOnWindowFocus: false,
+      enabled: false // turned off by default, manual refetch is needed
     }
-  };
-  const { isLoading, isError, data, error } = useQuery('booksDetails', () => getBookDetails(), {
-    retry: 10
-  });
+  );
 
-  console.log('details book', data);
+  console.log('book ıd', bookId);
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm();
 
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
 
-  const navigation = useNavigation();
+  const addPage = async (pageNumber: number, paramsBookId: string) => {
+    try {
+      const data = await BookService.addBookPage(paramsBookId, pageNumber, token);
+
+      if (data) {
+        refetch();
+        return showMessage({
+          message: 'Kitap Başarıyla Eklendi',
+          type: 'success'
+        });
+      }
+
+      showMessage({
+        message: 'Kitap Eklenemedi',
+        type: 'danger'
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const onSubmit = (input: any) => {
+    console.log('page number', input.pageNumber);
+    console.log('page number', bookId);
+    try {
+      addPage(input.pageNumber, bookId);
+      reset();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    if (isFocused) {
+      refetch();
+    }
+  }, []);
+
+  if (isError) {
+    return (
+      <View>
+        <Text>Error!</Text>
+      </View>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <View>
+        <Text></Text>
+      </View>
+    );
+  }
   return (
     <View style={styles.container}>
       <View
@@ -85,15 +136,21 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
           flex: 5
         }}>
         <ScrollView>
-          <UserReadList />
-          <UserReadList />
-          <UserReadList />
-          <UserReadList />
-          <UserReadList />
-          <UserReadList />
+          {data &&
+            data?.book &&
+            data?.book?.readPages &&
+            data?.book?.readPages?.map((book: any, index: any) => {
+              return <UserReadList {...book} key={index} />;
+            })}
         </ScrollView>
       </View>
-      <AddPageModal toggleModal={toggleModal} isModalVisible={isModalVisible} />
+      <AddPageModal
+        toggleModal={toggleModal}
+        isModalVisible={isModalVisible}
+        control={control}
+        onSubmit={onSubmit}
+        handleSubmit={handleSubmit}
+      />
     </View>
   );
 };

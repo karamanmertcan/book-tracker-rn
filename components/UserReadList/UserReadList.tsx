@@ -1,10 +1,16 @@
+import moment from 'moment';
 import * as React from 'react';
 import { Dimensions, Text, View } from 'react-native';
 import { Shadow } from 'react-native-shadow-2';
 
-interface IUserReadListProps {}
+interface IUserReadListProps {
+  pageNumber: number;
+  date: string;
+}
 
 const UserReadList: React.FunctionComponent<IUserReadListProps> = (props) => {
+  moment.locale('tr');
+
   return (
     <>
       <View
@@ -27,13 +33,13 @@ const UserReadList: React.FunctionComponent<IUserReadListProps> = (props) => {
               style={{
                 color: 'white'
               }}>
-              Okuduğum Sayfa Sayısı : 10
+              Okuduğum Sayfa Sayısı : {props.pageNumber}
             </Text>
             <Text
               style={{
                 color: 'white'
               }}>
-              Tarih : 10.10.2020
+              Tarih : {moment().format('LLLL')}
             </Text>
           </View>
         </Shadow>

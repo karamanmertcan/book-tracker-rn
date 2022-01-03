@@ -22,6 +22,7 @@ import Login from '../screens/LoginScreen';
 import Register from '../screens/RegisterScreen';
 import { useAtom } from 'jotai';
 import { isAuthenticated } from '../store';
+import LeaderboardScreen from '../screens/LeaderboardScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme?: ColorSchemeName }) {
   return (
@@ -88,22 +89,18 @@ function BottomTabNavigator() {
         options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
           title: 'Hesabım',
           headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name='user' color={color} />,
-          headerRight: () => (
-            <Pressable
-              onPress={() => navigation.navigate('Modal')}
-              style={({ pressed }) => ({
-                opacity: pressed ? 0.5 : 1
-              })}>
-              <FontAwesome
-                name='info-circle'
-                size={25}
-                color={Colors[colorScheme].text}
-                style={{ marginRight: 15 }}
-              />
-            </Pressable>
-          )
+          tabBarIcon: ({ color }) => <TabBarIcon name='user' color={color} />
         })}
+      />
+      <BottomTab.Screen
+        name='TabThree'
+        component={LeaderboardScreen}
+        options={{
+          title: 'Liderlik Tablosu',
+          headerShown: false,
+
+          tabBarIcon: ({ color }) => <TabBarIcon name='signal' color={color} />
+        }}
       />
       <BottomTab.Screen
         name='TabTwo'

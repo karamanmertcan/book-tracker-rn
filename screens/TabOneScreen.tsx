@@ -63,7 +63,10 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
               style={{
                 width: 100,
                 height: 60,
-                backgroundColor: '#f2f'
+                backgroundColor: '#3498db',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: 30
               }}>
               <Text>Çıkış Yap</Text>
             </TouchableOpacity>
