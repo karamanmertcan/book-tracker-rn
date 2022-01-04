@@ -3,7 +3,9 @@ import * as React from 'react';
 import { Text, View } from 'react-native';
 import { userState } from '../../store';
 
-interface IBookInfosProps {}
+interface IBookInfosProps {
+  totalPage: number;
+}
 
 const BookInfos: React.FunctionComponent<IBookInfosProps> = (props) => {
   const [user, setUser] = useAtom(userState);
@@ -23,7 +25,7 @@ const BookInfos: React.FunctionComponent<IBookInfosProps> = (props) => {
           }}>
           Okuduğum Sayfa Sayısı
         </Text>
-        <Text>{user && user.user && user.user.totalPage}</Text>
+        <Text>{props.totalPage}</Text>
       </View>
       <View
         style={{

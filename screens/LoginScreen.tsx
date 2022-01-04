@@ -99,7 +99,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
           <View style={styles.svgCurve}>
             <View
               style={{
-                backgroundColor: '#0099ff',
+                backgroundColor: '#2c3e50',
                 height: 600,
                 justifyContent: 'center'
               }}>
@@ -109,7 +109,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
                 viewBox='0 0 1440 320'
                 style={{ position: 'absolute', top: 440 }}>
                 <Path
-                  fill='#0099ff'
+                  fill='#2c3e50'
                   d='M0,96L48,112C96,128,192,160,288,186.7C384
             ,213,480,235,576,213.3C672,192,768,128,864,
             128C960,128,1056,192,1152,208C1248,224,1344,192,
@@ -129,7 +129,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
                     width: 100
                   }}
                   source={{
-                    uri: 'https://i.imgur.com/Y95QzOD.png'
+                    uri: 'https://i.imgur.com/TfufMLq.png'
                   }}
                 />
               </View>
@@ -147,7 +147,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
                       fontWeight: 'bold',
                       color: 'white'
                     }}>
-                    Kap Bir Kepçe
+                    Motive Hisset
                   </Text>
                 </View>
                 <View style={styles.formContainer}>

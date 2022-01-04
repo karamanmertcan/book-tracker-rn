@@ -11,6 +11,7 @@ import { myToken } from '../store';
 import * as BookService from '../api/services/Book';
 import { showMessage } from 'react-native-flash-message';
 import { useForm } from 'react-hook-form';
+import { useBookDetailsData } from '../customHooks/useBookDetailsData';
 
 interface IBookDetailsScreenProps {}
 
@@ -24,16 +25,9 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
   const route = useRoute<any>();
   const { bookId } = route.params;
 
-  const { isLoading, isError, data, error, refetch } = useQuery(
-    'booksDetails',
-    () => BookService.getBookDetails(bookId, token),
-    {
-      refetchOnWindowFocus: false,
-      enabled: false // turned off by default, manual refetch is needed
-    }
-  );
+  const { isLoading, isError, data, error, refetch } = useBookDetailsData(bookId, token);
 
-  console.log('book ıd', bookId);
+  console.log('book ıd', data);
   const {
     control,
     handleSubmit,
@@ -93,8 +87,14 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
 
   if (isLoading) {
     return (
-      <View>
-        <Text></Text>
+      <View
+        style={{
+          backgroundColor: '#f2f',
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+        <Text>Loading...</Text>
       </View>
     );
   }

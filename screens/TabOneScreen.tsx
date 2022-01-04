@@ -5,8 +5,12 @@ import { Shadow } from 'react-native-shadow-2';
 import BookInfos from '../components/BookInfos/BookInfos';
 import Chart from '../components/Chart/Chart';
 import UserAvatar from '../components/UserAvatar/UserAvatar';
-import { logoutUser, userState } from '../store';
+import { logoutUser, myToken, userState } from '../store';
 import { RootTabScreenProps } from '../types';
+import * as UserService from '../api/services/User';
+import { useQuery } from 'react-query';
+import { useIsFocused } from '@react-navigation/native';
+import moment from 'moment';
 
 interface Quotes {
   text: string;
@@ -15,8 +19,19 @@ interface Quotes {
 
 export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'>) {
   const [avatarColor, setAvatarColor] = useState('');
+  const [token, setToken] = useAtom(myToken);
   const [, setLogoutUser] = useAtom(logoutUser);
   const [quote, setQuote] = useState({} as Quotes);
+
+  const isFocused = useIsFocused();
+
+  const { isLoading, isError, data, error, refetch } = useQuery(
+    'userDetails',
+    () => UserService.getUserDetails(token),
+    {
+      refetchInterval: 3000 // turned off by default, manual refetch is needed
+    }
+  );
 
   function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -44,6 +59,34 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     setAvatarColor(getRandomColor());
     getQuotes();
   }, []);
+
+  if (isError) {
+    return (
+      <View
+        style={{
+          backgroundColor: '#f2f',
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+        <Text>Error...</Text>
+      </View>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          backgroundColor: '#f2f',
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+        <Text>Loading...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -94,7 +137,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
             marginTop: '10%'
           }}>
           <View style={styles.bookInfos}>
-            <BookInfos />
+            <BookInfos totalPage={data?.user[0]?.totalPage} />
           </View>
         </View>
         <View

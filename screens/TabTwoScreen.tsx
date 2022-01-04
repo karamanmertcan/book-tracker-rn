@@ -110,16 +110,28 @@ export default function TabTwoScreen() {
 
   if (isError) {
     return (
-      <View>
-        <Text>Error!</Text>{' '}
+      <View
+        style={{
+          backgroundColor: '#f2f',
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+        <Text>Error...</Text>
       </View>
     );
   }
 
   if (isLoading) {
     return (
-      <View>
-        <Text></Text>
+      <View
+        style={{
+          backgroundColor: '#f2f',
+          flex: 1,
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}>
+        <Text>Loading...</Text>
       </View>
     );
   }

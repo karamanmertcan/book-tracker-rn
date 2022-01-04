@@ -19,6 +19,7 @@ import { useAtom } from 'jotai';
 import { showMessage } from 'react-native-flash-message';
 import Svg, { Path, SvgXml } from 'react-native-svg';
 import RegisterForm from '../components/RegisterForm/RegisterForm';
+import * as UserService from '../api/services/User';
 
 interface ILoginProps {
   outlineColor: string;
@@ -34,6 +35,7 @@ const Register: React.FunctionComponent<ILoginProps> = (props) => {
   const {
     control,
     handleSubmit,
+    reset,
     formState: { errors }
   } = useForm();
 
@@ -46,7 +48,14 @@ const Register: React.FunctionComponent<ILoginProps> = (props) => {
       });
     } else {
       try {
-        console.log(input);
+        const data = await UserService.register(input.name, input.email, input.password);
+
+        showMessage({
+          message: 'Kayit basarili',
+          type: 'success'
+        });
+
+        reset();
       } catch (error) {
         console.log(error);
         showMessage({
@@ -67,7 +76,7 @@ const Register: React.FunctionComponent<ILoginProps> = (props) => {
           <View style={styles.upperContainer}>
             <View
               style={{
-                backgroundColor: '#0099ff',
+                backgroundColor: '#2c3e50',
                 height: 800,
                 justifyContent: 'center'
               }}>
@@ -81,7 +90,7 @@ const Register: React.FunctionComponent<ILoginProps> = (props) => {
                     width: 100
                   }}
                   source={{
-                    uri: 'https://i.imgur.com/Y95QzOD.png'
+                    uri: 'https://i.imgur.com/TfufMLq.png'
                   }}
                 />
               </View>
@@ -100,7 +109,7 @@ const Register: React.FunctionComponent<ILoginProps> = (props) => {
                       fontWeight: 'bold',
                       color: 'white'
                     }}>
-                    Kap Bir Kepçe
+                    Motive Hisset
                   </Text>
                 </View>
                 <View style={styles.formContainer}>
