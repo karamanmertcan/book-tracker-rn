@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Fab from '../components/Fab/Fab';
 import ModalTester from '../components/Modal/Modal';
 import { useNavigation } from '@react-navigation/native';
@@ -71,6 +71,38 @@ export default function LeaderboardScreen() {
           style={{
             flexDirection: 'column'
           }}>
+          <View
+            style={{
+              height: 50,
+              width: Dimensions.get('window').width - 50,
+              flexDirection: 'row',
+              justifyContent: 'space-between'
+            }}>
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: 'bold',
+                color: '#fff'
+              }}>
+              Sıra
+            </Text>
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: 'bold',
+                color: '#fff'
+              }}>
+              İsim
+            </Text>
+            <Text
+              style={{
+                fontSize: 20,
+                fontWeight: 'bold',
+                color: '#fff'
+              }}>
+              Puan
+            </Text>
+          </View>
           {data && data.user && data.user.length !== 0 ? (
             data?.user?.map((user: any, index: any) => {
               return <RankUsers {...user} key={index} index={index} />;

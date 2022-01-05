@@ -8,8 +8,14 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer, DefaultTheme, DarkTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import * as React from 'react';
-import { ColorSchemeName, Pressable } from 'react-native';
-
+import { Image, Text, TouchableOpacity, ColorSchemeName, Pressable } from 'react-native';
+import {
+  AnimatedTabBarNavigator,
+  DotSize,
+  TabElementDisplayOptions
+} from 'react-native-animated-nav-tab-bar';
+import Icon from 'react-native-vector-icons/Feather';
+import styled from 'styled-components/native';
 import Colors from '../constants/Colors';
 import useColorScheme from '../hooks/useColorScheme';
 import NotFoundScreen from '../screens/NotFoundScreen';
@@ -72,47 +78,60 @@ function RootNavigator() {
  * A bottom tab navigator displays tab buttons on the bottom of the display to switch screens.
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
-const BottomTab = createBottomTabNavigator<RootTabParamList>();
+
+const Tabs = AnimatedTabBarNavigator<RootTabParamList>();
+
+const Screen = styled.View`
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  background-color: #f2f2f2;
+`;
 
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
-
   return (
-    <BottomTab.Navigator
+    <Tabs.Navigator
       initialRouteName='TabOne'
       screenOptions={{
         tabBarActiveTintColor: Colors[colorScheme].tint
+      }}
+      appearance={{
+        shadow: true,
+        floating: true,
+        whenActiveShow: TabElementDisplayOptions.ICON_ONLY,
+        dotSize: DotSize.SMALL
       }}>
-      <BottomTab.Screen
+      <Tabs.Screen
         name='TabOne'
         component={TabOneScreen}
         options={({ navigation }: RootTabScreenProps<'TabOne'>) => ({
           title: 'Hesabım',
           headerShown: false,
-          tabBarIcon: ({ color }) => <TabBarIcon name='user' color={color} />
+          tabBarIcon: ({ color }: { color: any }) => <TabBarIcon name='user' color={color} />
         })}
       />
-      <BottomTab.Screen
+      <Tabs.Screen
         name='TabThree'
         component={LeaderboardScreen}
         options={{
           title: 'Liderlik Tablosu',
           headerShown: false,
 
-          tabBarIcon: ({ color }) => <TabBarIcon name='signal' color={color} />
+          tabBarIcon: ({ color }: { color: any }) => <TabBarIcon name='signal' color={color} />
         }}
       />
-      <BottomTab.Screen
+      <Tabs.Screen
         name='TabTwo'
         component={TabTwoScreen}
         options={{
           title: 'Kitaplarım',
           headerShown: false,
 
-          tabBarIcon: ({ color }) => <TabBarIcon name='book' color={color} />
+          tabBarIcon: ({ color }: { color: any }) => <TabBarIcon name='book' color={color} />
         }}
       />
-    </BottomTab.Navigator>
+    </Tabs.Navigator>
   );
 }
 

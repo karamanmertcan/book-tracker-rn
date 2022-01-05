@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Text, View } from 'react-native';
+import { Dimensions, Text, View } from 'react-native';
 
 interface IRankUsersProps {
   name: string;
@@ -13,12 +13,13 @@ const RankUsers: React.FunctionComponent<IRankUsersProps> = (props) => {
       style={{
         flex: 1,
         minHeight: 80,
-        width: '100%',
+        width: Dimensions.get('window').width - 50,
         backgroundColor: '#3498db',
         marginBottom: '5%',
         borderRadius: 30,
         flexDirection: 'row',
-        justifyContent: 'space-around',
+        padding: 10,
+        justifyContent: 'space-between',
         alignItems: 'center',
         overflow: 'hidden'
       }}>
@@ -27,14 +28,6 @@ const RankUsers: React.FunctionComponent<IRankUsersProps> = (props) => {
           flexDirection: 'column',
           alignItems: 'center'
         }}>
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: 'bold',
-            color: '#fff'
-          }}>
-          Sıra
-        </Text>
         <Text
           style={{
             fontSize: 20,
@@ -55,14 +48,6 @@ const RankUsers: React.FunctionComponent<IRankUsersProps> = (props) => {
             fontWeight: 'bold',
             color: '#fff'
           }}>
-          İsim
-        </Text>
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: 'bold',
-            color: '#fff'
-          }}>
           {props.name}
         </Text>
       </View>
@@ -71,14 +56,6 @@ const RankUsers: React.FunctionComponent<IRankUsersProps> = (props) => {
           flexDirection: 'column',
           alignItems: 'center'
         }}>
-        <Text
-          style={{
-            fontSize: 20,
-            fontWeight: 'bold',
-            color: '#fff'
-          }}>
-          Puan
-        </Text>
         <Text
           style={{
             fontSize: 20,
