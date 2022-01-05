@@ -11,11 +11,13 @@ import { myToken } from '../store';
 import BookCards from '../components/BookCards/BookCards';
 import { useForm } from 'react-hook-form';
 import { showMessage } from 'react-native-flash-message';
-
+import * as Animatable from 'react-native-animatable';
 const initialState = {
   bookName: '',
   author: ''
 };
+
+const MyCustomComponent = Animatable.createAnimatableComponent(View);
 
 export default function TabTwoScreen() {
   const [token, setToken] = useAtom(myToken);
@@ -145,16 +147,19 @@ export default function TabTwoScreen() {
             alignItems: 'center',
             padding: 10
           }}>
-          <Text
+          <Animatable.Text
+            animation='fadeInUp'
             style={{
               fontSize: 20,
               fontWeight: 'bold',
-              color: '#fff'
+              color: '#fff',
+              padding: 10
             }}>
             Kitaplarım
-          </Text>
+          </Animatable.Text>
         </View>
-        <View
+        <Animatable.View
+          animation='fadeInUp'
           style={{
             flexDirection: 'row',
             flexWrap: 'wrap'
@@ -181,7 +186,7 @@ export default function TabTwoScreen() {
               </Text>
             </View>
           )}
-        </View>
+        </Animatable.View>
       </ScrollView>
       <View
         style={{
