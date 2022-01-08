@@ -29,6 +29,8 @@ import Register from '../screens/RegisterScreen';
 import { useAtom } from 'jotai';
 import { isAuthenticated } from '../store';
 import LeaderboardScreen from '../screens/LeaderboardScreen';
+import QuotesScreen from '../screens/QuotesScreen';
+import QuotesDetailsScreen from '../screens/QuotesDetailsScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme?: ColorSchemeName }) {
   return (
@@ -65,6 +67,11 @@ function RootNavigator() {
           <Stack.Screen
             name='BookDetailsScreen'
             component={BookDetailsScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen
+            name='QuotesDetailsScreen'
+            component={QuotesDetailsScreen}
             options={{ headerShown: false }}
           />
           <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />
@@ -129,6 +136,16 @@ function BottomTabNavigator() {
           headerShown: false,
 
           tabBarIcon: ({ color }: { color: any }) => <TabBarIcon name='book' color={color} />
+        }}
+      />
+      <Tabs.Screen
+        name='TabFour'
+        component={QuotesScreen}
+        options={{
+          title: 'Notlarım',
+          headerShown: false,
+
+          tabBarIcon: ({ color }: { color: any }) => <TabBarIcon name='sticky-note' color={color} />
         }}
       />
     </Tabs.Navigator>

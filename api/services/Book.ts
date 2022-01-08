@@ -46,10 +46,41 @@ export async function getBookDetails(bookId: string, token: string) {
   return data;
 }
 
+export async function getBookQuotes(bookId: string, token: string) {
+  const { data } = await HTTPClient.get<any>(`/get-single-book-quotes/${bookId}`, {
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+      Authorization: 'Bearer ' + token
+    }
+  });
+  return data;
+}
+
 export async function addBookPage(bookId: string, page: number, token: string) {
   const { data } = await HTTPClient.put<any>(
     `/book-add-page`,
     { _id: bookId, pageNumber: page },
+    {
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        Authorization: 'Bearer ' + token
+      }
+    }
+  );
+  return data;
+}
+
+export async function addQuotes(
+  book: {
+    bookId: string;
+    bookName: string;
+    quote: string;
+  },
+  token: string
+) {
+  const { data } = await HTTPClient.post<any>(
+    `/add-user-quotes`,
+    { bookId: book.bookId, bookName: book.bookName, quote: book.quote },
     {
       headers: {
         Accept: 'application/json, text/plain, */*',

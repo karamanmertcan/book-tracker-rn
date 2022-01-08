@@ -25,6 +25,17 @@ const linking: LinkingOptions<RootStackParamList> = {
               TabTwoScreen: 'two',
               BookDetailsScreen: 'book/:id'
             }
+          },
+          TabThree: {
+            screens: {
+              TabThreeScreen: 'three'
+            }
+          },
+          TabFour: {
+            screens: {
+              TabFourScreen: 'four',
+              QuotesDetailsScreen: 'quote/:id'
+            }
           }
         }
       },

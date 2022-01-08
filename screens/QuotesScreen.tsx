@@ -1,6 +1,10 @@
 import { useEffect, useState } from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { RFPercentage, RFValue } from 'react-native-responsive-fontsize';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp
+} from 'react-native-responsive-screen';
 import Fab from '../components/Fab/Fab';
 import ModalTester from '../components/Modal/Modal';
 import { useIsFocused, useNavigation } from '@react-navigation/native';
@@ -13,6 +17,7 @@ import BookCards from '../components/BookCards/BookCards';
 import { useForm } from 'react-hook-form';
 import { showMessage } from 'react-native-flash-message';
 import * as Animatable from 'react-native-animatable';
+import QuoteModal from '../components/QuoteModal/QuoteModal';
 const initialState = {
   bookName: '',
   author: ''
@@ -20,7 +25,7 @@ const initialState = {
 
 const MyCustomComponent = Animatable.createAnimatableComponent(View);
 
-export default function TabTwoScreen() {
+export default function QuotesScreen() {
   const [token, setToken] = useAtom(myToken);
 
   const navigation = useNavigation();
@@ -39,23 +44,6 @@ export default function TabTwoScreen() {
     }
   );
 
-  //add book
-  const addBook = async (name: string, author: string) => {
-    try {
-      BookService.addBook(
-        {
-          bookName: name,
-          bookAuthor: author
-        },
-        token
-      );
-
-      refetch();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   const {
     control,
     handleSubmit,
@@ -66,50 +54,6 @@ export default function TabTwoScreen() {
   const toggleModal = () => {
     setModalVisible(!isModalVisible);
   };
-
-  const onSubmit = async (input: any) => {
-    console.log(input);
-
-    try {
-      getBookFromGoogle(input.book);
-      reset();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const getBookFromGoogle = async (book: string) => {
-    try {
-      const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${book}`);
-      const data = await res.json();
-
-      console.log(data);
-
-      if (!data) {
-        showMessage({
-          message: 'Kitap bulunamadi',
-          type: 'danger'
-        });
-      }
-
-      addBook(data.items[0].volumeInfo.title, data.items[0].volumeInfo.authors[0]);
-
-      showMessage({
-        message: 'Kitap Eklendi',
-        type: 'success'
-      });
-
-      toggleModal();
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  useEffect(() => {
-    if (isFocused) {
-      refetch();
-    }
-  }, []);
 
   if (isError) {
     return (
@@ -156,7 +100,7 @@ export default function TabTwoScreen() {
               color: '#fff',
               padding: 10
             }}>
-            Kitaplarım
+            Notlarım
           </Animatable.Text>
         </View>
         <Animatable.View
@@ -195,17 +139,7 @@ export default function TabTwoScreen() {
           bottom: 100,
           right: 10,
           zIndex: 1
-        }}>
-        <Fab toggleModal={toggleModal} />
-      </View>
-      <ModalTester
-        control={control}
-        onSubmit={onSubmit}
-        handleSubmit={handleSubmit}
-        addBook={addBook}
-        toggleModal={toggleModal}
-        isModalVisible={isModalVisible}
-      />
+        }}></View>
     </View>
   );
 }
@@ -218,7 +152,7 @@ const styles = StyleSheet.create({
   },
   gridView: {
     marginTop: 12,
-    width: '50%',
+    width: wp('100%'),
     height: 200,
     flexDirection: 'row',
     justifyContent: 'center',

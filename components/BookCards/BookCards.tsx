@@ -1,6 +1,11 @@
 import * as React from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useRoute } from '@react-navigation/native';
+import { RFPercentage, RFValue } from 'react-native-responsive-fontsize';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp
+} from 'react-native-responsive-screen';
 
 interface IBookCardsProps {
   bookName: string;
@@ -10,31 +15,39 @@ interface IBookCardsProps {
 
 const BookCards: React.FunctionComponent<IBookCardsProps> = (props) => {
   const navigation = useNavigation<any>();
+  const route = useRoute<any>();
+
+  console.log(route.name);
 
   console.log(props._id);
+  console.log(props);
 
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate('BookDetailsScreen', {
-          bookId: props._id
-        });
+        navigation.navigate(
+          `${route.name === 'TabTwo' ? 'BookDetailsScreen' : 'QuotesDetailsScreen'}`,
+          {
+            bookId: props._id,
+            bookName: props.bookName
+          }
+        );
       }}
       style={{
-        width: '100%'
+        width: wp('90%')
       }}>
       <View style={styles.gridView}>
         <View>
           <Text
             style={{
-              fontSize: 14,
+              fontSize: RFValue(14),
               fontWeight: 'bold'
             }}>
             {props.bookName}
           </Text>
           <Text
             style={{
-              fontSize: 10
+              fontSize: RFValue(10)
             }}>
             {props.bookAuthor}
           </Text>
@@ -51,7 +64,7 @@ const styles = StyleSheet.create({
   },
   gridView: {
     marginTop: 12,
-    height: 200,
+    height: hp('30%'),
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
