@@ -19,8 +19,6 @@ export const getTokenAndUserFromStorage = atom(
       const bakeToJsonToken = token && JSON.parse(token);
 
       if (bakeToJsonToken && bakeToJsonUser) {
-        console.log('user var');
-
         set(isAuthenticated, true);
         set(userState, {
           user: bakeToJsonUser,

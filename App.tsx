@@ -15,7 +15,7 @@ import useCachedResources from './hooks/useCachedResources';
 import useColorScheme from './hooks/useColorScheme';
 import Navigation from './navigation';
 import { getTokenAndUserFromStorage } from './store';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import { UserProvider } from './context';
 
 interface StatusBar {
@@ -38,7 +38,6 @@ export default function App() {
 
   useEffect(() => {
     setGetUserFromStorage();
-    console.log(getUser);
   }, [isLoadingComplete]);
 
   if (!isLoadingComplete) {

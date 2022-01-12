@@ -1,6 +1,6 @@
 import { useState, createContext, useEffect } from 'react';
-import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as UserService from '../api/services/User';
 
 const UserContext = createContext({
   myToken: ''
@@ -17,6 +17,8 @@ const UserProvider = ({ children }: { children: any }) => {
 
   useEffect(() => {
     getToken();
+
+    UserService.getLastWeekPages(myToken);
   }, []);
 
   return (

@@ -18,6 +18,7 @@ import { useForm } from 'react-hook-form';
 import { showMessage } from 'react-native-flash-message';
 import * as Animatable from 'react-native-animatable';
 import QuoteModal from '../components/QuoteModal/QuoteModal';
+import Spinner from 'react-native-loading-spinner-overlay';
 const initialState = {
   bookName: '',
   author: ''
@@ -43,6 +44,8 @@ export default function QuotesScreen() {
       enabled: false // turned off by default, manual refetch is needed
     }
   );
+
+  const [spinner, setSpinner] = useState(isLoading);
 
   const {
     control,
@@ -71,14 +74,14 @@ export default function QuotesScreen() {
 
   if (isLoading) {
     return (
-      <View
-        style={{
-          backgroundColor: '#f2f',
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-        <Text>Loading...</Text>
+      <View style={{}}>
+        <Spinner
+          visible={spinner}
+          textContent={'Yükleniyor...'}
+          textStyle={{
+            color: '#FFF'
+          }}
+        />
       </View>
     );
   }

@@ -4,7 +4,9 @@ import { Text, View } from 'react-native';
 import { userState } from '../../store';
 
 interface IBookInfosProps {
+  lastWeekPage: number;
   totalPage: number;
+  book: number;
 }
 
 const BookInfos: React.FunctionComponent<IBookInfosProps> = (props) => {
@@ -45,7 +47,7 @@ const BookInfos: React.FunctionComponent<IBookInfosProps> = (props) => {
           }}>
           Okuduğum Kitap Sayısı
         </Text>
-        <Text>1</Text>
+        <Text>{props.book}</Text>
       </View>
     </>
   );

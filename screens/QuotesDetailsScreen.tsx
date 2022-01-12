@@ -15,6 +15,7 @@ import { useBookDetailsData } from '../customHooks/useBookDetailsData';
 import { useBookQuotes } from '../customHooks/useBookQuotes';
 import UserQuotes from '../components/UserQuotes/UserQuotes';
 import QuoteModal from '../components/QuoteModal/QuoteModal';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 interface IBookDetailsScreenProps {}
 
@@ -29,6 +30,8 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
   const { bookId, bookName } = route.params;
 
   const { isLoading, isError, data, error, refetch } = useBookQuotes(bookId, token);
+
+  const [spinner, setSpinner] = useState(isLoading);
 
   console.log('qyıtes', data);
   const {
@@ -97,14 +100,14 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
 
   if (isLoading) {
     return (
-      <View
-        style={{
-          backgroundColor: '#f2f',
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-        <Text>Loading...</Text>
+      <View style={{}}>
+        <Spinner
+          visible={spinner}
+          textContent={'Yükleniyor...'}
+          textStyle={{
+            color: '#FFF'
+          }}
+        />
       </View>
     );
   }

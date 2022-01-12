@@ -13,6 +13,7 @@ import BookCards from '../components/BookCards/BookCards';
 import { useForm } from 'react-hook-form';
 import { showMessage } from 'react-native-flash-message';
 import * as Animatable from 'react-native-animatable';
+import Spinner from 'react-native-loading-spinner-overlay';
 const initialState = {
   bookName: '',
   author: ''
@@ -38,6 +39,8 @@ export default function TabTwoScreen() {
       enabled: false // turned off by default, manual refetch is needed
     }
   );
+
+  const [spinner, setSpinner] = useState(isLoading);
 
   //add book
   const addBook = async (name: string, author: string) => {
@@ -68,8 +71,6 @@ export default function TabTwoScreen() {
   };
 
   const onSubmit = async (input: any) => {
-    console.log(input);
-
     try {
       getBookFromGoogle(input.book);
       reset();
@@ -82,8 +83,6 @@ export default function TabTwoScreen() {
     try {
       const res = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${book}`);
       const data = await res.json();
-
-      console.log(data);
 
       if (!data) {
         showMessage({
@@ -127,14 +126,14 @@ export default function TabTwoScreen() {
 
   if (isLoading) {
     return (
-      <View
-        style={{
-          backgroundColor: '#f2f',
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-        <Text>Loading...</Text>
+      <View>
+        <Spinner
+          visible={spinner}
+          textContent={'Yükleniyor...'}
+          textStyle={{
+            color: '#FFF'
+          }}
+        />
       </View>
     );
   }

@@ -14,6 +14,7 @@ import {
   StatusBar,
   Button
 } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import { useFonts } from 'expo-font';
 import { useAtom } from 'jotai';
 import axios from 'axios';
@@ -34,6 +35,7 @@ interface ILoginProps {
 const Login: React.FunctionComponent<ILoginProps> = (props) => {
   const [isAuthenticatedUser, setIsAuthenticatedUser] = useAtom(isAuthenticated);
   const [user, setUser] = useAtom(myToken);
+  const [spinner, setSpinner] = useState(false);
 
   const [state, setState] = useAtom(userState);
   const [errorMessage, setErrorMessage] = useState('');
@@ -57,14 +59,9 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
       try {
         console.log(input);
 
-        // const { data } = await axios.post('/login', {
-        //   email: input.email,
-        //   password: input.password
-        // });
+        setSpinner(true);
 
         UserService.login(input.email, input.password).then(async (res) => {
-          console.log(res);
-
           if (res.ok) {
             await AsyncStorage.setItem('token', JSON.stringify(res.token));
             await AsyncStorage.setItem('user', JSON.stringify(res.user));
@@ -76,8 +73,9 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
             setUser(res.token);
 
             setIsAuthenticatedUser(true);
+            setSpinner(false);
             showMessage({
-              message: 'Giris yapiliyor',
+              message: 'Giriş Başarılı',
               type: 'success'
             });
           }
@@ -88,6 +86,7 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
           message: errorMessage,
           type: 'danger'
         });
+        setSpinner(false);
       }
     }
   };
@@ -95,6 +94,13 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
       <View style={[{ minHeight: Math.round(windowHeight) }, styles.container]}>
+        <Spinner
+          visible={spinner}
+          textContent={'Yükleniyor...'}
+          textStyle={{
+            color: '#FFF'
+          }}
+        />
         <View style={styles.upperContainer}>
           <View style={styles.svgCurve}>
             <View

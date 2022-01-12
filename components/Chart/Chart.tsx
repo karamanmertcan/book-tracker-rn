@@ -31,7 +31,7 @@ const Chart: React.FunctionComponent<IChartProps> = (props) => {
       };
     });
   const daySeperator = (inputDay: string) => {
-    const day = dates.filter((item: any) => item.date === inputDay);
+    const day = dates && dates.filter((item: any) => item.date === inputDay);
 
     return day === undefined ? 0 : day;
   };
@@ -40,12 +40,16 @@ const Chart: React.FunctionComponent<IChartProps> = (props) => {
     return (
       <View
         style={{
-          backgroundColor: '#f2f',
           flex: 1,
           justifyContent: 'center',
           alignItems: 'center'
         }}>
-        <Text>Loading...</Text>
+        <Text
+          style={{
+            color: 'white'
+          }}>
+          Loading...
+        </Text>
       </View>
     );
   }
@@ -80,13 +84,27 @@ const Chart: React.FunctionComponent<IChartProps> = (props) => {
           datasets: [
             {
               data: [
-                daySeperator('Monday').reduce((acc: any, item: any) => acc + item.page, 0),
-                daySeperator('Tuesday').reduce((acc: any, item: any) => acc + item.page, 0),
-                daySeperator('Wednesday').reduce((acc: any, item: any) => acc + item.page, 0),
-                daySeperator('Thursday').reduce((acc: any, item: any) => acc + item.page, 0),
-                daySeperator('Friday').reduce((acc: any, item: any) => acc + item.page, 0),
-                daySeperator('Saturday').reduce((acc: any, item: any) => acc + item.page, 0),
-                daySeperator('Sunday').reduce((acc: any, item: any) => acc + item.page, 0)
+                dates
+                  ? daySeperator('Monday').reduce((acc: any, item: any) => acc + item.page, 0)
+                  : 0,
+                dates
+                  ? daySeperator('Tuesday').reduce((acc: any, item: any) => acc + item.page, 0)
+                  : 0,
+                dates
+                  ? daySeperator('Wednesday').reduce((acc: any, item: any) => acc + item.page, 0)
+                  : 0,
+                dates
+                  ? daySeperator('Thursday').reduce((acc: any, item: any) => acc + item.page, 0)
+                  : 0,
+                dates
+                  ? daySeperator('Friday').reduce((acc: any, item: any) => acc + item.page, 0)
+                  : 0,
+                dates
+                  ? daySeperator('Saturday').reduce((acc: any, item: any) => acc + item.page, 0)
+                  : 0,
+                dates
+                  ? daySeperator('Sunday').reduce((acc: any, item: any) => acc + item.page, 0)
+                  : 0
               ]
             }
           ]

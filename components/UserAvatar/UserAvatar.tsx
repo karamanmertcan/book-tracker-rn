@@ -34,7 +34,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     height: Dimensions.get('window').width * 0.5,
     width: Dimensions.get('window').width * 0.5,
-    borderRadius: Dimensions.get('window').width * 0.23
+    borderRadius: Dimensions.get('window').width * 0.25
   },
   avatarText: {
     fontSize: 50

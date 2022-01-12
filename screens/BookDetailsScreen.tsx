@@ -12,6 +12,7 @@ import * as BookService from '../api/services/Book';
 import { showMessage } from 'react-native-flash-message';
 import { useForm } from 'react-hook-form';
 import { useBookDetailsData } from '../customHooks/useBookDetailsData';
+import Spinner from 'react-native-loading-spinner-overlay';
 
 interface IBookDetailsScreenProps {}
 
@@ -26,6 +27,8 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
   const { bookId } = route.params;
 
   const { isLoading, isError, data, error, refetch } = useBookDetailsData(bookId, token);
+
+  const [spinner, setSpinner] = useState(false);
 
   console.log('book ıd', data);
   const {
@@ -87,14 +90,14 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
 
   if (isLoading) {
     return (
-      <View
-        style={{
-          backgroundColor: '#f2f',
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-        <Text>Loading...</Text>
+      <View>
+        <Spinner
+          visible={spinner}
+          textContent={'Yükleniyor...'}
+          textStyle={{
+            color: '#FFF'
+          }}
+        />
       </View>
     );
   }

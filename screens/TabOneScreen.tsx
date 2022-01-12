@@ -10,7 +10,12 @@ import { RootTabScreenProps } from '../types';
 import * as UserService from '../api/services/User';
 import { useQuery } from 'react-query';
 import { useIsFocused } from '@react-navigation/native';
-import moment from 'moment';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp
+} from 'react-native-responsive-screen';
+import Spinner from 'react-native-loading-spinner-overlay';
+import * as BookService from '../api/services/Book';
 
 interface Quotes {
   text: string;
@@ -22,6 +27,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   const [token, setToken] = useAtom(myToken);
   const [, setLogoutUser] = useAtom(logoutUser);
   const [quote, setQuote] = useState({} as Quotes);
+  const [bookCount, setBookCount] = useState(0);
 
   const isFocused = useIsFocused();
 
@@ -32,6 +38,19 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
       refetchInterval: 3000 // turned off by default, manual refetch is needed
     }
   );
+
+  const getBooksLength = async () => {
+    try {
+      const data = await BookService.getBooks(token);
+      console.log('books', data.book.length);
+
+      setBookCount(data?.book?.length);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const [spinner, setSpinner] = useState(isLoading);
 
   function getRandomColor() {
     var letters = '0123456789ABCDEF';
@@ -58,6 +77,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   useEffect(() => {
     setAvatarColor(getRandomColor());
     getQuotes();
+    getBooksLength();
   }, []);
 
   if (isError) {
@@ -76,14 +96,14 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
 
   if (isLoading) {
     return (
-      <View
-        style={{
-          backgroundColor: '#f2f',
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-        <Text>Loading...</Text>
+      <View style={{}}>
+        <Spinner
+          visible={spinner}
+          textContent={'Yükleniyor...'}
+          textStyle={{
+            color: '#FFF'
+          }}
+        />
       </View>
     );
   }
@@ -97,10 +117,12 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
         <View
           style={{
             flex: 1,
-            alignItems: 'center',
-            marginTop: '10%'
+            alignItems: 'center'
           }}>
-          <View>
+          <View
+            style={{
+              padding: hp(5)
+            }}>
             <TouchableOpacity
               onPress={() => setLogoutUser()}
               style={{
@@ -137,7 +159,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
             marginTop: '10%'
           }}>
           <View style={styles.bookInfos}>
-            <BookInfos totalPage={data?.user[0]?.totalPage} />
+            <BookInfos totalPage={data?.user[0]?.totalPage} book={bookCount} />
           </View>
         </View>
         <View

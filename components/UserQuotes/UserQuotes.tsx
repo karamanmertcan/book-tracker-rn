@@ -6,6 +6,7 @@ import { Shadow } from 'react-native-shadow-2';
 interface IUserReadListProps {
   pageNumber: number;
   date: string;
+  quote: string;
 }
 
 const UserQuotes: React.FunctionComponent<IUserReadListProps> = (props) => {

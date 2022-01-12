@@ -43,3 +43,13 @@ export async function getLeaderboardUsers(token: string) {
   });
   return data;
 }
+
+export async function getLastWeekPages(token: string) {
+  const { data } = await HTTPClient.get<User>('/get-last-week', {
+    headers: {
+      Accept: 'application/json, text/plain, */*',
+      Authorization: 'Bearer ' + token
+    }
+  });
+  return data;
+}

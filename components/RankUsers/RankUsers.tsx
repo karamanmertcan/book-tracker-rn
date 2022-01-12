@@ -4,7 +4,7 @@ import { Dimensions, Text, View } from 'react-native';
 interface IRankUsersProps {
   name: string;
   index: number;
-  totalPage: number;
+  lastWeekPage: number;
 }
 
 const RankUsers: React.FunctionComponent<IRankUsersProps> = (props) => {
@@ -62,7 +62,7 @@ const RankUsers: React.FunctionComponent<IRankUsersProps> = (props) => {
             fontWeight: 'bold',
             color: '#fff'
           }}>
-          {props.totalPage}
+          {props.lastWeekPage}
         </Text>
       </View>
     </View>

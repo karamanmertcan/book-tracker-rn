@@ -1,16 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Dimensions, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import Fab from '../components/Fab/Fab';
-import ModalTester from '../components/Modal/Modal';
+import Spinner from 'react-native-loading-spinner-overlay';
+
 import { useNavigation } from '@react-navigation/native';
 import { useQuery } from 'react-query';
 import * as UserService from '../api/services/User';
-import axios from 'axios';
 import { useAtom } from 'jotai';
 import { myToken } from '../store';
-import BookCards from '../components/BookCards/BookCards';
-import { useForm } from 'react-hook-form';
-import { showMessage } from 'react-native-flash-message';
 import RankUsers from '../components/RankUsers/RankUsers';
 
 const initialState = {
@@ -28,9 +24,10 @@ export default function LeaderboardScreen() {
     'rankUsers',
     () => UserService.getLeaderboardUsers(token),
     {
-      refetchInterval: 10000 // turned off by default, manual refetch is needed
+      refetchInterval: 1000 // turned off by default, manual refetch is needed
     }
   );
+  const [spinner, setSpinner] = useState(isLoading);
 
   if (isError) {
     return (
@@ -43,7 +40,13 @@ export default function LeaderboardScreen() {
   if (isLoading) {
     return (
       <View>
-        <Text></Text>
+        <Spinner
+          visible={spinner}
+          textContent={'Yükleniyor...'}
+          textStyle={{
+            color: '#FFF'
+          }}
+        />
       </View>
     );
   }
