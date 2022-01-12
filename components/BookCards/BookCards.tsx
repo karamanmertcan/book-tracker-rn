@@ -17,11 +17,6 @@ const BookCards: React.FunctionComponent<IBookCardsProps> = (props) => {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
 
-  console.log(route.name);
-
-  console.log(props._id);
-  console.log(props);
-
   return (
     <TouchableOpacity
       onPress={() => {

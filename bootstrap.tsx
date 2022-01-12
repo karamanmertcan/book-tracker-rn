@@ -6,9 +6,7 @@ import RootStackScreen from './navigation';
 import { getTokenAndUserFromStorage, getUserFromStorage } from './store';
 
 export default function Bootstrap() {
-  useEffect(() => {
-    console.log('bootstrap');
-  }, []);
+  useEffect(() => {}, []);
 
   return <Navigation />;
 }

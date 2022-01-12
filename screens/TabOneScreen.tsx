@@ -42,7 +42,6 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
   const getBooksLength = async () => {
     try {
       const data = await BookService.getBooks(token);
-      console.log('books', data.book.length);
 
       setBookCount(data?.book?.length);
     } catch (error) {

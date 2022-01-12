@@ -64,8 +64,6 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
   };
 
   const onSubmit = (input: any) => {
-    console.log('page number', input.pageNumber);
-    console.log('page number', bookId);
     try {
       addPage(input.pageNumber, bookId);
       reset();

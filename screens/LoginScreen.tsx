@@ -57,8 +57,6 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
       });
     } else {
       try {
-        console.log(input);
-
         setSpinner(true);
 
         UserService.login(input.email, input.password).then(async (res) => {

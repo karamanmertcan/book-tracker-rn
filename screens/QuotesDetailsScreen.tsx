@@ -33,7 +33,6 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
 
   const [spinner, setSpinner] = useState(isLoading);
 
-  console.log('qyıtes', data);
   const {
     control,
     handleSubmit,
