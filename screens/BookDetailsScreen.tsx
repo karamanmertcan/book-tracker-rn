@@ -71,12 +71,6 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
     }
   };
 
-  useEffect(() => {
-    if (isFocused) {
-      refetch();
-    }
-  }, []);
-
   if (isError) {
     return (
       <View>

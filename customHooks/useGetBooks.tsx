@@ -8,8 +8,5 @@ const fetchBooks = (token: string) => {
 };
 
 export const useGetBooks = (token: string) => {
-  return useQuery(['books'], () => fetchBooks(token), {
-    refetchOnWindowFocus: false,
-    enabled: false // turned off by default, manual refetch is needed
-  });
+  return useQuery(['books'], () => fetchBooks(token));
 };

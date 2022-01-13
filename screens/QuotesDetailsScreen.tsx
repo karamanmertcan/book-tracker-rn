@@ -17,7 +17,11 @@ import UserQuotes from '../components/UserQuotes/UserQuotes';
 import QuoteModal from '../components/QuoteModal/QuoteModal';
 import Spinner from 'react-native-loading-spinner-overlay';
 
-interface IBookDetailsScreenProps {}
+interface IBookDetailsScreenProps {
+  data: {
+    quotes: [];
+  };
+}
 
 const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (props) => {
   const [token, setToken] = useAtom(myToken);
@@ -29,9 +33,16 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
   const route = useRoute<any>();
   const { bookId, bookName } = route.params;
 
-  const { isLoading, isError, data, error, refetch } = useBookQuotes(bookId, token);
+  // const { isLoading, isError, data } = useBookQuotes(bookId, token);
 
-  const [spinner, setSpinner] = useState(isLoading);
+  const [spinner, setSpinner] = useState(false);
+  const [isLoading, setIsloading] = useState(false);
+  const [data, setData] = useState<any>([]);
+
+  const getSingleData = async (bookId: string) => {
+    const data = await BookService.getBookQuotes(bookId, token);
+    setData(data);
+  };
 
   const {
     control,
@@ -56,7 +67,6 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
       );
 
       if (data) {
-        refetch();
         toggleModal();
 
         return showMessage({
@@ -85,17 +95,9 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
 
   useEffect(() => {
     if (isFocused) {
-      refetch();
+      getSingleData(bookId);
     }
-  }, []);
-
-  if (isError) {
-    return (
-      <View>
-        <Text>Error!</Text>
-      </View>
-    );
-  }
+  }, [isFocused]);
 
   if (isLoading) {
     return (
@@ -148,11 +150,13 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
           flex: 5
         }}>
         <ScrollView>
-          {data &&
-            data?.quotes &&
+          {data && data?.quotes ? (
             data?.quotes?.map((book: any, index: any) => {
               return <UserQuotes {...book} key={index} />;
-            })}
+            })
+          ) : (
+            <Text>Loading...</Text>
+          )}
         </ScrollView>
       </View>
       <QuoteModal

@@ -6,8 +6,5 @@ const fetchBookQuotes = (bookId: any, token: string) => {
 };
 
 export const useBookQuotes = (bookId: any, token: string) => {
-  return useQuery(['bookQuotes', bookId], () => fetchBookQuotes(bookId, token), {
-    refetchOnWindowFocus: false,
-    enabled: false // turned off by default, manual refetch is needed
-  });
+  return useQuery(['bookQuotes', bookId], () => fetchBookQuotes(bookId, token));
 };
