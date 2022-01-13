@@ -58,6 +58,12 @@ export default function QuotesScreen() {
     setModalVisible(!isModalVisible);
   };
 
+  useEffect(() => {
+    if (isFocused) {
+      refetch();
+    }
+  }, []);
+
   if (isError) {
     return (
       <View

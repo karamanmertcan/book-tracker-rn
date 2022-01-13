@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 import { userState } from '../../store';
 
 interface IBookInfosProps {
-  lastWeekPage: number;
+  lastWeekPage?: number;
   totalPage: number;
   book: number;
 }

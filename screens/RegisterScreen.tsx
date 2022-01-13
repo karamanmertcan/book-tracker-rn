@@ -14,6 +14,7 @@ import {
   ScrollView,
   Button
 } from 'react-native';
+import Spinner from 'react-native-loading-spinner-overlay';
 import { useForm } from 'react-hook-form';
 import { useAtom } from 'jotai';
 import { showMessage } from 'react-native-flash-message';
@@ -30,6 +31,8 @@ interface ILoginProps {
 const Register: React.FunctionComponent<ILoginProps> = (props) => {
   const [errorMessage, setErrorMessage] = useState('');
   const windowHeight = useWindowDimensions().height;
+  const [spinner, setSpinner] = useState(false);
+
   const navigation = useNavigation<any>();
 
   const {
@@ -48,12 +51,16 @@ const Register: React.FunctionComponent<ILoginProps> = (props) => {
       });
     } else {
       try {
+        setSpinner(true);
+
         const data = await UserService.register(input.name, input.email, input.password);
 
         showMessage({
           message: 'Kayit basarili',
           type: 'success'
         });
+
+        setSpinner(false);
 
         reset();
       } catch (error) {
@@ -62,6 +69,7 @@ const Register: React.FunctionComponent<ILoginProps> = (props) => {
           message: errorMessage,
           type: 'danger'
         });
+        setSpinner(false);
       }
     }
   };
@@ -73,6 +81,13 @@ const Register: React.FunctionComponent<ILoginProps> = (props) => {
           flex: 1
         }}>
         <View style={[{ minHeight: Math.round(windowHeight) }, styles.container]}>
+          <Spinner
+            visible={spinner}
+            textContent={'Yükleniyor...'}
+            textStyle={{
+              color: '#FFF'
+            }}
+          />
           <View style={styles.upperContainer}>
             <View
               style={{
@@ -120,7 +135,24 @@ const Register: React.FunctionComponent<ILoginProps> = (props) => {
                     errors={errors}
                     page='login'
                   />
-                  <Button onPress={handleSubmit(onSubmit)} title='Kayıt Ol' />
+                  <View
+                    style={{
+                      marginTop: 10,
+                      alignItems: 'center'
+                    }}>
+                    <TouchableOpacity
+                      onPress={handleSubmit(onSubmit)}
+                      style={{
+                        width: 160,
+                        height: 60,
+                        backgroundColor: '#3498db',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: 30
+                      }}>
+                      <Text>Kayıt Ol</Text>
+                    </TouchableOpacity>
+                  </View>
 
                   <TouchableOpacity onPress={() => navigation.navigate('Login')}>
                     <View

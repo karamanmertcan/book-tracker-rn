@@ -181,7 +181,24 @@ const Login: React.FunctionComponent<ILoginProps> = (props) => {
                       </Text>
                     </View>
                   </TouchableOpacity>
-                  <Button onPress={handleSubmit(onSubmit)} title='Giriş Yap' />
+                  <View
+                    style={{
+                      marginTop: 10,
+                      alignItems: 'center'
+                    }}>
+                    <TouchableOpacity
+                      onPress={handleSubmit(onSubmit)}
+                      style={{
+                        width: 160,
+                        height: 60,
+                        backgroundColor: '#3498db',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        borderRadius: 30
+                      }}>
+                      <Text>Giriş Yap</Text>
+                    </TouchableOpacity>
+                  </View>
                 </View>
               </View>
             </View>

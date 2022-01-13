@@ -30,7 +30,6 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
 
   const [spinner, setSpinner] = useState(false);
 
-  console.log('book ıd', data);
   const {
     control,
     handleSubmit,

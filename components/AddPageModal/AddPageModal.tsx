@@ -14,7 +14,6 @@ import {
   View
 } from 'react-native';
 import Modal from 'react-native-modal';
-import { DatePicker } from '../DatePicker/DatePicker';
 
 interface IModal {
   isModalVisible: boolean;

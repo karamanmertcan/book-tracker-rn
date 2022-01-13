@@ -24,7 +24,7 @@ export default function LeaderboardScreen() {
     'rankUsers',
     () => UserService.getLeaderboardUsers(token),
     {
-      refetchInterval: 1000 // turned off by default, manual refetch is needed
+      refetchInterval: 30000 // turned off by default, manual refetch is needed
     }
   );
   const [spinner, setSpinner] = useState(isLoading);

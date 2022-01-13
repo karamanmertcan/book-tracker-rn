@@ -16,7 +16,7 @@ const Chart: React.FunctionComponent<IChartProps> = (props) => {
     'pageDetails',
     () => UserService.getUserDetails(token),
     {
-      refetchInterval: 3000 // turned off by default, manual refetch is needed
+      refetchInterval: 30000 // turned off by default, manual refetch is needed
     }
   );
 
@@ -69,7 +69,12 @@ const Chart: React.FunctionComponent<IChartProps> = (props) => {
   }
 
   return (
-    <View>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
       <Text
         style={{
           fontSize: 20,

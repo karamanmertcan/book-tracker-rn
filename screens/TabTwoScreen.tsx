@@ -45,7 +45,7 @@ export default function TabTwoScreen() {
   //add book
   const addBook = async (name: string, author: string) => {
     try {
-      BookService.addBook(
+      const data = await BookService.addBook(
         {
           bookName: name,
           bookAuthor: author
@@ -53,7 +53,9 @@ export default function TabTwoScreen() {
         token
       );
 
-      refetch();
+      if (data) {
+        refetch();
+      }
     } catch (error) {
       console.log(error);
     }

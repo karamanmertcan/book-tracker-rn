@@ -35,7 +35,7 @@ export default function TabOneScreen({ navigation }: RootTabScreenProps<'TabOne'
     'userDetails',
     () => UserService.getUserDetails(token),
     {
-      refetchInterval: 3000 // turned off by default, manual refetch is needed
+      refetchInterval: 30000 // turned off by default, manual refetch is needed
     }
   );
 
