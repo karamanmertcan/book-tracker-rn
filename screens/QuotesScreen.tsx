@@ -16,15 +16,13 @@ import { myToken } from '../store';
 import BookCards from '../components/BookCards/BookCards';
 import { useForm } from 'react-hook-form';
 import { showMessage } from 'react-native-flash-message';
-import * as Animatable from 'react-native-animatable';
 import QuoteModal from '../components/QuoteModal/QuoteModal';
 import Spinner from 'react-native-loading-spinner-overlay';
+import QuotesCards from '../components/QuotesCards/QuotesCards';
 const initialState = {
   bookName: '',
   author: ''
 };
-
-const MyCustomComponent = Animatable.createAnimatableComponent(View);
 
 export default function QuotesScreen() {
   const [token, setToken] = useAtom(myToken);
@@ -34,16 +32,27 @@ export default function QuotesScreen() {
 
   const [isModalVisible, setModalVisible] = useState(false);
   const [book, setBook] = useState({});
+  const [data, setData] = useState<any>([]);
+  const [isLoading, setLoading] = useState(false);
 
   //get books
-  const { isLoading, isError, data, refetch } = useQuery(
-    'books',
-    () => BookService.getBooks(token),
-    {
-      refetchOnWindowFocus: false,
-      enabled: false // turned off by default, manual refetch is needed
+  // const { isLoading, isError, data, refetch } = useQuery(
+  //   'books',
+  //   () => BookService.getBooks(token),
+  //   {
+  //     refetchOnWindowFocus: false,
+  //     enabled: false // turned off by default, manual refetch is needed
+  //   }
+  // );
+
+  const getAllBooks = async () => {
+    try {
+      const books = await BookService.getBooks(token);
+      setData(books);
+    } catch (error) {
+      console.log(error);
     }
-  );
+  };
 
   const [spinner, setSpinner] = useState(isLoading);
 
@@ -54,29 +63,11 @@ export default function QuotesScreen() {
     formState: { errors }
   } = useForm();
 
-  const toggleModal = () => {
-    setModalVisible(!isModalVisible);
-  };
-
   useEffect(() => {
     if (isFocused) {
-      refetch();
+      getAllBooks();
     }
-  }, []);
-
-  if (isError) {
-    return (
-      <View
-        style={{
-          backgroundColor: '#f2f',
-          flex: 1,
-          justifyContent: 'center',
-          alignItems: 'center'
-        }}>
-        <Text>Error...</Text>
-      </View>
-    );
-  }
+  }, [isFocused]);
 
   if (isLoading) {
     return (
@@ -101,8 +92,7 @@ export default function QuotesScreen() {
             alignItems: 'center',
             padding: 10
           }}>
-          <Animatable.Text
-            animation='fadeInUp'
+          <Text
             style={{
               fontSize: RFValue(20),
               fontWeight: 'bold',
@@ -110,17 +100,16 @@ export default function QuotesScreen() {
               padding: 10
             }}>
             Notlarım
-          </Animatable.Text>
+          </Text>
         </View>
-        <Animatable.View
-          animation='fadeInUp'
+        <View
           style={{
             flexDirection: 'row',
             flexWrap: 'wrap'
           }}>
           {data && data.book && data.book.length !== 0 ? (
             data?.book?.map((book: any, index: any) => {
-              return <BookCards {...book} key={index} />;
+              return <QuotesCards {...book} key={index} />;
             })
           ) : (
             <View
@@ -140,7 +129,7 @@ export default function QuotesScreen() {
               </Text>
             </View>
           )}
-        </Animatable.View>
+        </View>
       </ScrollView>
       <View
         style={{

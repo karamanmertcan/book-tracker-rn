@@ -1,6 +1,6 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
 import UserReadList from '../components/UserReadList/UserReadList';
 import AddPageModal from '../components/AddPageModal/AddPageModal';
@@ -71,6 +71,12 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
     }
   };
 
+  useEffect(() => {
+    if (isFocused) {
+      refetch();
+    }
+  }, []);
+
   if (isError) {
     return (
       <View>
@@ -129,14 +135,14 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
         style={{
           flex: 5
         }}>
-        <ScrollView>
-          {data &&
-            data?.book &&
-            data?.book?.readPages &&
-            data?.book?.readPages?.map((book: any, index: any) => {
-              return <UserReadList {...book} key={index} />;
-            })}
-        </ScrollView>
+        {data && data?.book && data?.book?.readPages && (
+          <FlatList
+            data={data.book.readPages}
+            renderItem={({ item }) => (
+              <UserReadList {...item} keyExtractor={(item: any) => item._id} />
+            )}
+          />
+        )}
       </View>
       <AddPageModal
         toggleModal={toggleModal}

@@ -1,29 +1,21 @@
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
-import { ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { useIsFocused, useNavigation, useRoute } from '@react-navigation/native';
-import UserReadList from '../components/UserReadList/UserReadList';
-import AddPageModal from '../components/AddPageModal/AddPageModal';
-import axios from 'axios';
-import { useQuery } from 'react-query';
+
 import { useAtom } from 'jotai';
 import { myToken } from '../store';
 import * as BookService from '../api/services/Book';
 import { showMessage } from 'react-native-flash-message';
 import { useForm } from 'react-hook-form';
-import { useBookDetailsData } from '../customHooks/useBookDetailsData';
-import { useBookQuotes } from '../customHooks/useBookQuotes';
-import UserQuotes from '../components/UserQuotes/UserQuotes';
-import QuoteModal from '../components/QuoteModal/QuoteModal';
 import Spinner from 'react-native-loading-spinner-overlay';
+import QuoteModal from '../components/QuoteModal/QuoteModal';
+import UserQuotes from '../components/UserQuotes/UserQuotes';
+import { useBookQuotes } from '../customHooks/useBookQuotes';
 
-interface IBookDetailsScreenProps {
-  data: {
-    quotes: [];
-  };
-}
+interface IQuotesDetailsScreenProps {}
 
-const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (props) => {
+const QuotesDetailsScreen: React.FunctionComponent<IQuotesDetailsScreenProps> = (props) => {
   const [token, setToken] = useAtom(myToken);
 
   const navigation = useNavigation();
@@ -33,16 +25,9 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
   const route = useRoute<any>();
   const { bookId, bookName } = route.params;
 
-  // const { isLoading, isError, data } = useBookQuotes(bookId, token);
+  const { isLoading, isError, data, error, refetch } = useBookQuotes(bookId, token);
 
-  const [spinner, setSpinner] = useState(false);
-  const [isLoading, setIsloading] = useState(false);
-  const [data, setData] = useState<any>([]);
-
-  const getSingleData = async (bookId: string) => {
-    const data = await BookService.getBookQuotes(bookId, token);
-    setData(data);
-  };
+  const [spinner, setSpinner] = useState(isLoading);
 
   const {
     control,
@@ -67,6 +52,7 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
       );
 
       if (data) {
+        refetch();
         toggleModal();
 
         return showMessage({
@@ -95,9 +81,17 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
 
   useEffect(() => {
     if (isFocused) {
-      getSingleData(bookId);
+      refetch();
     }
-  }, [isFocused]);
+  }, []);
+
+  if (isError) {
+    return (
+      <View>
+        <Text>Error!</Text>
+      </View>
+    );
+  }
 
   if (isLoading) {
     return (
@@ -149,22 +143,21 @@ const BookDetailsScreen: React.FunctionComponent<IBookDetailsScreenProps> = (pro
         style={{
           flex: 5
         }}>
-        <ScrollView>
-          {data && data?.quotes ? (
-            data?.quotes?.map((book: any, index: any) => {
-              return <UserQuotes {...book} key={index} />;
-            })
-          ) : (
-            <Text>Loading...</Text>
-          )}
-        </ScrollView>
+        {data && data?.quotes && (
+          <FlatList
+            data={data.quotes}
+            renderItem={({ item }) => (
+              <UserQuotes {...item} keyExtractor={(item: any) => item._id} />
+            )}
+          />
+        )}
       </View>
       <QuoteModal
+        toggleModal={toggleModal}
+        isModalVisible={isModalVisible}
         control={control}
         onSubmit={onSubmit}
         handleSubmit={handleSubmit}
-        toggleModal={toggleModal}
-        isModalVisible={isModalVisible}
       />
     </View>
   );
@@ -178,4 +171,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default BookDetailsScreen;
+export default QuotesDetailsScreen;

@@ -29,8 +29,8 @@ import Register from '../screens/RegisterScreen';
 import { useAtom } from 'jotai';
 import { isAuthenticated } from '../store';
 import LeaderboardScreen from '../screens/LeaderboardScreen';
-import QuotesScreen from '../screens/QuotesScreen';
 import QuotesDetailsScreen from '../screens/QuotesDetailsScreen';
+import QuotesScreen from '../screens/QuotesScreen';
 
 export default function Navigation({ colorScheme }: { colorScheme?: ColorSchemeName }) {
   return (
@@ -48,6 +48,32 @@ export default function Navigation({ colorScheme }: { colorScheme?: ColorSchemeN
  */
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
+function QuotesTab() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name='TabFour' component={QuotesScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name='QuotesDetailsScreen'
+        component={QuotesDetailsScreen}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+}
+
+function BooksTab() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name='BookScreen' component={TabTwoScreen} options={{ headerShown: false }} />
+      <Stack.Screen
+        name='BookDetailsScreen'
+        component={BookDetailsScreen}
+        options={{ headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+}
+
 function RootNavigator() {
   const [isAuthenticatedUser] = useAtom(isAuthenticated);
   return (
@@ -64,16 +90,7 @@ function RootNavigator() {
             component={BottomTabNavigator}
             options={{ headerShown: false }}
           />
-          <Stack.Screen
-            name='BookDetailsScreen'
-            component={BookDetailsScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen
-            name='QuotesDetailsScreen'
-            component={QuotesDetailsScreen}
-            options={{ headerShown: false }}
-          />
+
           <Stack.Screen name='NotFound' component={NotFoundScreen} options={{ title: 'Oops!' }} />
         </>
       )}
@@ -86,29 +103,12 @@ function RootNavigator() {
  * https://reactnavigation.org/docs/bottom-tab-navigator
  */
 
-const Tabs = AnimatedTabBarNavigator<RootTabParamList>();
-
-const Screen = styled.View`
-  flex: 1;
-  justify-content: center;
-  align-items: center;
-  background-color: #f2f2f2;
-`;
+const Tabs = createBottomTabNavigator<RootTabParamList>();
 
 function BottomTabNavigator() {
   const colorScheme = useColorScheme();
   return (
-    <Tabs.Navigator
-      initialRouteName='TabOne'
-      screenOptions={{
-        tabBarActiveTintColor: Colors[colorScheme].tint
-      }}
-      appearance={{
-        shadow: true,
-        floating: true,
-        whenActiveShow: TabElementDisplayOptions.ICON_ONLY,
-        dotSize: DotSize.SMALL
-      }}>
+    <Tabs.Navigator initialRouteName='TabOne'>
       <Tabs.Screen
         name='TabOne'
         component={TabOneScreen}
@@ -130,7 +130,7 @@ function BottomTabNavigator() {
       />
       <Tabs.Screen
         name='TabTwo'
-        component={TabTwoScreen}
+        component={BooksTab}
         options={{
           title: 'Kitaplarım',
           headerShown: false,
@@ -139,8 +139,8 @@ function BottomTabNavigator() {
         }}
       />
       <Tabs.Screen
-        name='TabFour'
-        component={QuotesScreen}
+        name='Quotes'
+        component={QuotesTab}
         options={{
           title: 'Notlarım',
           headerShown: false,

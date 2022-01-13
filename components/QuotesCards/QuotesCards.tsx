@@ -7,20 +7,20 @@ import {
   heightPercentageToDP as hp
 } from 'react-native-responsive-screen';
 
-interface IBookCardsProps {
+interface IQuotesCardsProps {
   bookName: string;
   bookAuthor: string;
   _id: string;
 }
 
-const BookCards: React.FunctionComponent<IBookCardsProps> = (props) => {
+const QuotesCards: React.FunctionComponent<IQuotesCardsProps> = (props) => {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
 
   return (
     <TouchableOpacity
       onPress={() => {
-        navigation.navigate(`${'BookDetailsScreen'}`, {
+        navigation.navigate(`${'QuotesDetailsScreen'}`, {
           bookId: props._id,
           bookName: props.bookName
         });
@@ -65,4 +65,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default BookCards;
+export default QuotesCards;

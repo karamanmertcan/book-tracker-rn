@@ -9,8 +9,6 @@ interface IUserReadListProps {
 }
 
 const UserReadList: React.FunctionComponent<IUserReadListProps> = (props) => {
-  moment.locale('tr');
-
   return (
     <>
       <View

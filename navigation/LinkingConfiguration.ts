@@ -31,7 +31,7 @@ const linking: LinkingOptions<RootStackParamList> = {
               TabThreeScreen: 'three'
             }
           },
-          TabFour: {
+          Quotes: {
             screens: {
               TabFourScreen: 'four',
               QuotesDetailsScreen: 'quote/:id'

@@ -10,8 +10,6 @@ interface IUserReadListProps {
 }
 
 const UserQuotes: React.FunctionComponent<IUserReadListProps> = (props) => {
-  moment.locale('tr');
-
   return (
     <>
       <View
